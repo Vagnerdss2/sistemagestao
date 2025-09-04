@@ -1,28 +1,12 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAppContext } from '../contexts/AppContext';
 import { TrendingUp, AlertTriangle, CheckCircle, Clock, Package, Wrench } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 
 const Dashboard: React.FC = () => {
-  const { getDashboardStats } = useAppContext();
+  const { getDashboardStats, atendimentos } = useAppContext();
   const stats = getDashboardStats();
-  const { atendimentos } = useAppContext();
-
-  // Preparar dados para o gráfico de tipos de atendimento
-  const tiposAtendimento = atendimentos.reduce((acc, atendimento) => {
-    const tipo = atendimento.tipo_servico;
-    acc[tipo] = (acc[tipo] || 0) + 1;
-    return acc;
-  }, {} as { [key: string]: number });
-
-  const chartData = Object.entries(tiposAtendimento).map(([tipo, quantidade]) => ({
-    tipo: tipo.length > 15 ? tipo.substring(0, 15) + '...' : tipo,
-    quantidade,
-    fullTipo: tipo
-  }));
-  const { atendimentos } = useAppContext();
 
   // Preparar dados para o gráfico de tipos de atendimento
   const tiposAtendimento = atendimentos.reduce((acc, atendimento) => {
@@ -137,53 +121,6 @@ const Dashboard: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
-
-      {/* Gráfico de Tipos de Atendimento */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">Tipos de Atendimento Mais Utilizados</h2>
-        {chartData.length > 0 ? (
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="tipo" 
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  fontSize={12}
-                  stroke="#6b7280"
-                />
-                <YAxis stroke="#6b7280" fontSize={12} />
-                <Tooltip 
-                  formatter={(value, name, props) => [value, 'Quantidade']}
-                  labelFormatter={(label, payload) => {
-                    const item = payload?.[0]?.payload;
-                    return item?.fullTipo || label;
-                  }}
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                  }}
-                />
-                <Bar 
-                  dataKey="quantidade" 
-                  fill="#3b82f6" 
-                  radius={[4, 4, 0, 0]}
-                  stroke="#2563eb"
-                  strokeWidth={1}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="h-80 flex items-center justify-center text-gray-500">
-            <p>Nenhum dado disponível para exibir</p>
-          </div>
-        )}
       </div>
 
       {/* Gráfico de Tipos de Atendimento */}

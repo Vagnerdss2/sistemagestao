@@ -141,18 +141,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         ));
       });
     }
-    setAtendimentos(prev => [...prev, novoAtendimento]);
-    
-    // Baixar itens do estoque se foram utilizados
-    if (atendimento.itens_utilizados) {
-      atendimento.itens_utilizados.forEach(item => {
-        setPecas(prev => prev.map(peca => 
-          peca.id === item.peca_id 
-            ? { ...peca, quantidade_disponivel: Math.max(0, peca.quantidade_disponivel - item.quantidade) }
-            : peca
-        ));
-      });
-    }
   };
 
   const updateAtendimento = (id: string, atendimento: Partial<Atendimento>) => {
